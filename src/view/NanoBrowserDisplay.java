@@ -1,6 +1,5 @@
 package view;
 
-import java.io.IOException;
 import java.net.URL;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -50,6 +49,7 @@ public class NanoBrowserDisplay {
     // information area
     private Label myStatus;
     private NanoBrowser nanoBrowser;
+    private AddFavoriteDisplay addFavoriteDisplay;
 
 
 
@@ -81,6 +81,7 @@ public class NanoBrowserDisplay {
             update(nanoBrowser.handleNewURL(url));
         }
         catch (Exception e) {
+            e.printStackTrace();
             showError(String.format("Could not load %s", url));
         }
     }
@@ -123,10 +124,20 @@ public class NanoBrowserDisplay {
                 e.printStackTrace();
             }
         });
-//        Button setFavoriteButton = makeButton("Set Favorite", event -> )
+        Button addFavoriteButton = setupAddFavoriteButton();
         myURLDisplay = makeInputField(40, showHandler);
-        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, myURLDisplay);
+        addFavoriteDisplay = new AddFavoriteDisplay(event -> addFavoriteRef());
+        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, myURLDisplay);
         return result;
+    }
+
+    private void addFavoriteRef() {
+        nanoBrowser.addReferenceToMap(addFavoriteDisplay.getInput(), myURLDisplay.getText());
+    }
+
+    private Button setupAddFavoriteButton() {
+        Button addFavoriteButton = makeButton("Set Favorite", event -> addFavoriteDisplay.setupAddFavoritePopup());
+        return addFavoriteButton;
     }
 
     // Make panel where "would-be" clicked URL is displayed

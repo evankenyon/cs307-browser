@@ -1,7 +1,5 @@
 package model;
 
-import com.sun.management.HotSpotDiagnosticMXBean;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,12 +11,15 @@ public class NanoBrowser {
     private URL homeURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
+    private AddFavorite addFavorite;
+
 
     public NanoBrowser() {
         myCurrentURL = null;
         homeURL = null;
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
+        addFavorite = new AddFavorite();
     }
 
     // Move to next URL in the history
@@ -47,7 +48,12 @@ public class NanoBrowser {
     }
 
     public URL handleNewURL(String url) throws IOException {
-        URL tmp = completeURL(url);
+        URL tmp;
+        if(addFavorite.doesReferenceHaveURL(url)) {
+            tmp = addFavorite.getURLFromReference(url);
+        } else {
+            tmp = completeURL(url);
+        }
         if (tmp != null) {
             // unfortunately, completeURL may not have returned a valid URL, so test it
             tmp.openStream();
@@ -57,6 +63,10 @@ public class NanoBrowser {
             return myCurrentURL;
         }
         throw new IOException();
+    }
+
+    public void addReferenceToMap(String ref, String url) {
+        addFavorite.addReferenceToMap(ref, completeURL(url));
     }
 
     private void addURLToHistory(URL url) {
