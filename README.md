@@ -1,7 +1,7 @@
 Browser
 ====
 
-This project implements a web browser.
+This project implements a web view.
 
 Name: 
 

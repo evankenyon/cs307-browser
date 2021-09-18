@@ -1,5 +1,7 @@
 package model;
 
+import com.sun.management.HotSpotDiagnosticMXBean;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,11 +10,13 @@ import java.util.List;
 
 public class NanoBrowser {
     private URL myCurrentURL;
+    private URL homeURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
 
     public NanoBrowser() {
         myCurrentURL = null;
+        homeURL = null;
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
     }
@@ -29,6 +33,19 @@ public class NanoBrowser {
         return myHistory.get(myCurrentIndex);
     }
 
+    public void setHome() {
+        this.homeURL = myCurrentURL;
+    }
+
+    // TODO: Change exception type?
+    public URL getHome() throws NullPointerException {
+        addURLToHistory(homeURL);
+        if(homeURL == null) {
+            throw new NullPointerException();
+        }
+        return homeURL;
+    }
+
     public URL handleNewURL(String url) throws IOException {
         URL tmp = completeURL(url);
         if (tmp != null) {
@@ -36,14 +53,18 @@ public class NanoBrowser {
             tmp.openStream();
             // if successful, remember this URL
             myCurrentURL = tmp;
-            if (hasNext()) {
-                myHistory = myHistory.subList(0, myCurrentIndex + 1);
-            }
-            myHistory.add(myCurrentURL);
-            myCurrentIndex += 1;
+            addURLToHistory(myCurrentURL);
             return myCurrentURL;
         }
         throw new IOException();
+    }
+
+    private void addURLToHistory(URL url) {
+        if (hasNext()) {
+            myHistory = myHistory.subList(0, myCurrentIndex + 1);
+        }
+        myHistory.add(url);
+        myCurrentIndex += 1;
     }
 
     // Deal with a potentially incomplete URL

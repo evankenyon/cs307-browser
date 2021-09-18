@@ -1,7 +1,7 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.awt.Dimension;
-import browser.NanoBrowserDisplay;
+import view.NanoBrowserDisplay;
 
 
 /**

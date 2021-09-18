@@ -1,5 +1,6 @@
-package browser;
+package view;
 
+import java.io.IOException;
 import java.net.URL;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -109,14 +110,22 @@ public class NanoBrowserDisplay {
         HBox result = new HBox();
         // create buttons, with their associated actions
         Button backButton = makeButton("Back", event -> update(nanoBrowser.back()));
-        result.getChildren().add(backButton);
         Button nextButton = makeButton("Next", event -> update(nanoBrowser.next()));
-        result.getChildren().add(nextButton);
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
-        result.getChildren().add(makeButton("Go", showHandler));
+        Button goButton = makeButton("Go", showHandler);
+        Button setHomeButton = makeButton("Set Home", event -> nanoBrowser.setHome());
+        Button goHomeButton = makeButton("Go to Home", event -> {
+            try {
+                update(nanoBrowser.getHome());
+            } catch (NullPointerException e) {
+                //FIXME: Handle this better
+                e.printStackTrace();
+            }
+        });
+//        Button setFavoriteButton = makeButton("Set Favorite", event -> )
         myURLDisplay = makeInputField(40, showHandler);
-        result.getChildren().add(myURLDisplay);
+        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, myURLDisplay);
         return result;
     }
 
