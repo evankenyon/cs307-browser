@@ -1,9 +1,6 @@
 package browser;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
@@ -20,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
+import model.NanoBrowser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -40,7 +38,7 @@ import org.w3c.dom.events.EventTarget;
  * @author Edwin Ward
  * @author Robert C. Duvall
  */
-public class NanoBrowser {
+public class NanoBrowserDisplay {
     // constants
     public static final String BLANK = " ";
 
@@ -50,19 +48,15 @@ public class NanoBrowser {
     private TextField myURLDisplay;
     // information area
     private Label myStatus;
-    // data
-    private URL myCurrentURL;
-    private int myCurrentIndex;
-    private List<URL> myHistory;
+    private NanoBrowser nanoBrowser;
+
 
 
     /**
      * Create a web browser with prompts in the given language with initially empty state.
      */
-    public NanoBrowser () {
-        myCurrentURL = null;
-        myCurrentIndex = -1;
-        myHistory = new ArrayList<>();
+    public NanoBrowserDisplay() {
+        nanoBrowser = new NanoBrowser();
     }
 
     /**
@@ -83,40 +77,11 @@ public class NanoBrowser {
      */
     public void showPage (String url) {
         try {
-            URL tmp = completeURL(url);
-            if (tmp != null) {
-                // unfortunately, completeURL may not have returned a valid URL, so test it
-                tmp.openStream();
-                // if successful, remember this URL
-                myCurrentURL = tmp;
-                if (hasNext()) {
-                    myHistory = myHistory.subList(0, myCurrentIndex + 1);
-                }
-                myHistory.add(myCurrentURL);
-                myCurrentIndex += 1;
-                update(myCurrentURL);
-            }
+            update(nanoBrowser.handleNewURL(url));
         }
         catch (Exception e) {
             showError(String.format("Could not load %s", url));
         }
-    }
-
-    // Move to next URL in the history
-    private void next () {
-        myCurrentIndex += 1;
-        update(myHistory.get(myCurrentIndex));
-    }
-
-    // Move to previous URL in the history
-    private void back () {
-        myCurrentIndex -= 1;
-        update(myHistory.get(myCurrentIndex));
-    }
-
-    // Returns true if there is a next URL available
-    private boolean hasNext () {
-        return myCurrentIndex < (myHistory.size() - 1);
     }
 
     // Update just the view to display given URL
@@ -143,9 +108,9 @@ public class NanoBrowser {
     private Node makeInputPanel () {
         HBox result = new HBox();
         // create buttons, with their associated actions
-        Button backButton = makeButton("Back", event -> back());
+        Button backButton = makeButton("Back", event -> update(nanoBrowser.back()));
         result.getChildren().add(backButton);
-        Button nextButton = makeButton("Next", event -> next());
+        Button nextButton = makeButton("Next", event -> update(nanoBrowser.next()));
         result.getChildren().add(nextButton);
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
@@ -184,33 +149,6 @@ public class NanoBrowser {
         result.setPrefColumnCount(width);
         result.setOnAction(handler);
         return result;
-    }
-
-    // Deal with a potentially incomplete URL
-    private URL completeURL (String possible) {
-        final String PROTOCOL_PREFIX = "http://";
-        try {
-            // try it as is
-            return new URL(possible);
-        }
-        catch (MalformedURLException e) {
-            try {
-                // e.g., let user leave off initial protocol
-                return new URL(PROTOCOL_PREFIX + possible);
-            }
-            catch (MalformedURLException ee) {
-                try {
-                    // try it as a relative link
-                    // FIXME: need to generalize this :(
-                    return new URL(myCurrentURL.toString() + "/" + possible);
-                }
-                catch (MalformedURLException eee) {
-                    // FIXME: not a good way to handle an error!
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
     }
 
 

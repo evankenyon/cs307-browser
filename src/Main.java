@@ -1,7 +1,7 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.awt.Dimension;
-import browser.NanoBrowser;
+import browser.NanoBrowserDisplay;
 
 
 /**
@@ -21,7 +21,7 @@ public class Main extends Application {
      */
     @Override
     public void start (Stage stage) {
-        NanoBrowser browser = new NanoBrowser();
+        NanoBrowserDisplay browser = new NanoBrowserDisplay();
         // give the window a title
         stage.setTitle(TITLE);
         // add our user interface components to Frame and show it
