@@ -13,7 +13,7 @@ public class Main extends Application {
     // convenience constants
     public static final String TITLE = "NanoBrowser";
     public static final String DEFAULT_START_PAGE = "https://users.cs.duke.edu/rcd";
-    public static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
+    public static final Dimension DEFAULT_SIZE = new Dimension(1000, 800);
 
 
     /**

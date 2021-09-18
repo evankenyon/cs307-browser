@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
@@ -24,6 +25,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.html.HTMLOptGroupElement;
 
 
 /**
@@ -50,8 +52,7 @@ public class NanoBrowserDisplay {
     private Label myStatus;
     private NanoBrowser nanoBrowser;
     private AddFavoriteDisplay addFavoriteDisplay;
-
-
+    private TopSitesDisplay topSitesDisplay;
 
     /**
      * Create a web browser with prompts in the given language with initially empty state.
@@ -65,6 +66,7 @@ public class NanoBrowserDisplay {
      */
     public Scene makeScene (int width, int height) {
         BorderPane root = new BorderPane();
+
         // must be first since other panels may refer to page
         root.setCenter(makePageDisplay());
         root.setTop(makeInputPanel());
@@ -116,7 +118,7 @@ public class NanoBrowserDisplay {
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
         Button goButton = makeButton("Go", showHandler);
         Button setHomeButton = makeButton("Set Home", event -> nanoBrowser.setHome());
-        Button goHomeButton = makeButton("Go to Home", event -> {
+        Button goHomeButton = makeButton("Go Home", event -> {
             try {
                 update(nanoBrowser.getHome());
             } catch (NullPointerException e) {
@@ -124,20 +126,22 @@ public class NanoBrowserDisplay {
                 e.printStackTrace();
             }
         });
-        Button addFavoriteButton = setupAddFavoriteButton();
+        Button addFavoriteButton = makeButton("Set Favorite", event -> addFavoriteDisplay.setupAddFavoritePopup());
+        Button getTopSitesDisplay = makeButton("Top Sites", event -> setupTopSitesDisplay());
         myURLDisplay = makeInputField(40, showHandler);
         addFavoriteDisplay = new AddFavoriteDisplay(event -> addFavoriteRef());
-        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, myURLDisplay);
+        topSitesDisplay = new TopSitesDisplay();
+        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, getTopSitesDisplay, myURLDisplay);
         return result;
+    }
+
+    private void setupTopSitesDisplay() {
+        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
+        topSitesDisplay.setupTopSitesPopup();
     }
 
     private void addFavoriteRef() {
         nanoBrowser.addReferenceToMap(addFavoriteDisplay.getInput(), myURLDisplay.getText());
-    }
-
-    private Button setupAddFavoriteButton() {
-        Button addFavoriteButton = makeButton("Set Favorite", event -> addFavoriteDisplay.setupAddFavoritePopup());
-        return addFavoriteButton;
     }
 
     // Make panel where "would-be" clicked URL is displayed

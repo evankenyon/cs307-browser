@@ -3,7 +3,6 @@ package view;
 import javafx.event.EventHandler;
 import javafx.scene.control.DialogEvent;
 import javafx.scene.control.TextInputDialog;
-import model.NanoBrowser;
 
 public class AddFavoriteDisplay {
     private TextInputDialog setNameInput;

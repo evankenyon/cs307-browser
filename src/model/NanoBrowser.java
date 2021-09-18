@@ -12,6 +12,7 @@ public class NanoBrowser {
     private int myCurrentIndex;
     private List<URL> myHistory;
     private AddFavorite addFavorite;
+    private TopSites topSites;
 
 
     public NanoBrowser() {
@@ -20,22 +21,27 @@ public class NanoBrowser {
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
         addFavorite = new AddFavorite();
+        topSites = new TopSites();
     }
 
     // Move to next URL in the history
     public URL next () {
         myCurrentIndex += 1;
-        return myHistory.get(myCurrentIndex);
+        URL nextUrl = myHistory.get(myCurrentIndex);
+        incrementURLFrequency(nextUrl);
+        return nextUrl;
     }
 
     // Move to previous URL in the history
     public URL back () {
         myCurrentIndex -= 1;
-        return myHistory.get(myCurrentIndex);
+        URL prevUrl = myHistory.get(myCurrentIndex);
+        incrementURLFrequency(prevUrl);
+        return prevUrl;
     }
 
     public void setHome() {
-        this.homeURL = myCurrentURL;
+        homeURL = myCurrentURL;
     }
 
     // TODO: Change exception type?
@@ -60,6 +66,7 @@ public class NanoBrowser {
             // if successful, remember this URL
             myCurrentURL = tmp;
             addURLToHistory(myCurrentURL);
+            topSites.incrementURLFrequency(myCurrentURL);
             return myCurrentURL;
         }
         throw new IOException();
@@ -69,11 +76,20 @@ public class NanoBrowser {
         addFavorite.addReferenceToMap(ref, completeURL(url));
     }
 
+    private void incrementURLFrequency(URL url) {
+        topSites.incrementURLFrequency(url);
+    }
+
+    public List<URL> getUrlsFreqOrdered() {
+        return topSites.getUrlsFreqOrdered();
+    }
+
     private void addURLToHistory(URL url) {
         if (hasNext()) {
             myHistory = myHistory.subList(0, myCurrentIndex + 1);
         }
         myHistory.add(url);
+        incrementURLFrequency(url);
         myCurrentIndex += 1;
     }
 
