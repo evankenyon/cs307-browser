@@ -25,14 +25,20 @@ public class NanoBrowser {
     }
 
     // Move to next URL in the history
-    public URL next () {
+    public URL next() throws IndexOutOfBoundsException{
         myCurrentIndex += 1;
+        if(myCurrentIndex >= myHistory.size()) {
+            throw new IndexOutOfBoundsException();
+        }
         return myHistory.get(myCurrentIndex);
     }
 
     // Move to previous URL in the history
-    public URL back () {
+    public URL back () throws IndexOutOfBoundsException{
         myCurrentIndex -= 1;
+        if(myCurrentIndex < 0) {
+            throw new IndexOutOfBoundsException();
+        }
         return myHistory.get(myCurrentIndex);
     }
 

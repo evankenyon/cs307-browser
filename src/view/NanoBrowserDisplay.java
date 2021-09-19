@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
+import util.ButtonMaker;
 
 
 /**
@@ -49,7 +50,7 @@ public class NanoBrowserDisplay {
     private NanoBrowser nanoBrowser;
     private AddFavoriteDisplay addFavoriteDisplay;
     private TopSitesDisplay topSitesDisplay;
-    private Button selectFavoriteButton;
+
     private Button nextButton;
     private Button backButton;
 
@@ -59,6 +60,21 @@ public class NanoBrowserDisplay {
     public NanoBrowserDisplay() {
         nanoBrowser = new NanoBrowser();
         topSitesDisplay = new TopSitesDisplay();
+        addFavoriteDisplay = new AddFavoriteDisplay(event -> {
+            try {
+                update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit()));
+            } catch (IllegalAccessException e) {
+                //TODO: Make this better
+                e.printStackTrace();
+            }
+        }, event -> {
+            try {
+                addFavoriteDisplay.addFavoriteRefToBrowser(nanoBrowser, myURLDisplay);
+            } catch (IllegalAccessException e) {
+                //TODO: Make this better
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -78,10 +94,8 @@ public class NanoBrowserDisplay {
 
     private Node makeLeftPanel() {
         VBox leftPanel = new VBox();
-        Button goToTopSiteButton = makeButton("Go to selected site", event -> update(topSitesDisplay.getSelectedSite()));
-        selectFavoriteButton = makeButton("Go to selected site", event -> update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit())));
-        selectFavoriteButton.setDisable(true);
-        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), goToTopSiteButton, addFavoriteDisplay.getChooseFavoriteSite(), selectFavoriteButton);
+        Button goToTopSiteButton = ButtonMaker.makeButton("Go to selected site", event -> update(topSitesDisplay.getSelectedSite()));
+        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), goToTopSiteButton, addFavoriteDisplay.getDisplayComponentsLeftPanel());
         return leftPanel;
     }
 
@@ -130,13 +144,13 @@ public class NanoBrowserDisplay {
     private Node makeInputPanel () {
         HBox result = new HBox();
         // create buttons, with their associated actions
-        backButton = makeButton("Back", event -> update(nanoBrowser.back()));
-        nextButton = makeButton("Next", event -> update(nanoBrowser.next()));
+        backButton = ButtonMaker.makeButton("Back", event -> update(nanoBrowser.back()));
+        nextButton = ButtonMaker.makeButton("Next", event -> update(nanoBrowser.next()));
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
-        Button goButton = makeButton("Go", showHandler);
-        Button setHomeButton = makeButton("Set Home", event -> nanoBrowser.setHome());
-        Button goHomeButton = makeButton("Go Home", event -> {
+        Button goButton = ButtonMaker.makeButton("Go", showHandler);
+        Button setHomeButton = ButtonMaker.makeButton("Set Home", event -> nanoBrowser.setHome());
+        Button goHomeButton = ButtonMaker.makeButton("Go Home", event -> {
             try {
                 update(nanoBrowser.getHome());
             } catch (NullPointerException e) {
@@ -144,25 +158,9 @@ public class NanoBrowserDisplay {
                 e.printStackTrace();
             }
         });
-        Button addFavoriteButton = makeButton("Set Favorite", event -> addFavoriteDisplay.setupAddFavoritePopup());
         myURLDisplay = makeInputField(40, showHandler);
-        addFavoriteDisplay = new AddFavoriteDisplay(event -> {
-            try {
-                addFavoriteRefToBrowser();
-            } catch (IllegalAccessException e) {
-                // TODO: Make better
-                e.printStackTrace();
-            }
-        });
-        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, myURLDisplay);
+        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteDisplay.getAddFavoriteButton(), myURLDisplay);
         return result;
-    }
-
-
-    private void addFavoriteRefToBrowser() throws IllegalAccessException {
-        selectFavoriteButton.setDisable(false);
-        addFavoriteDisplay.updateFavoriteChoices();
-        nanoBrowser.addReferenceToMap(addFavoriteDisplay.getInput(), myURLDisplay.getText());
     }
 
     // Make panel where "would-be" clicked URL is displayed
@@ -178,14 +176,6 @@ public class NanoBrowserDisplay {
         // catch "browsing" events within web page
         myPage.getEngine().getLoadWorker().stateProperty().addListener(new LinkListener());
         return myPage;
-    }
-
-    // Typical code to create button
-    private Button makeButton (String label, EventHandler<ActionEvent> handler) {
-        Button result = new Button();
-        result.setText(label);
-        result.setOnAction(handler);
-        return result;
     }
 
     // Typical code to create text field for input

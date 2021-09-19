@@ -1,53 +1,85 @@
 package view;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DialogEvent;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import model.NanoBrowser;
+import util.ButtonMaker;
 
 public class AddFavoriteDisplay {
     private TextInputDialog setNameInput;
     private ChoiceBox<String> chooseFavoriteSite;
     private Text description;
-
+    private Button addFavoriteButton;
+    private Button selectFavoriteButton;
 
 
     // Set up code was borrowed from
     // https://www.geeksforgeeks.org/javafx-textinputdialog/
-    public AddFavoriteDisplay(EventHandler<DialogEvent> onCloseEvent) {
-        description = new Text("Favorited webpages:");
-        setNameInput = new TextInputDialog();
-        chooseFavoriteSite = new ChoiceBox<>();
+    public AddFavoriteDisplay(EventHandler<ActionEvent> selectFavoriteEvent, EventHandler<DialogEvent> onCloseEvent) {
+        instantiateNonButtons();
+        chooseFavoriteSite.setOnAction(event -> setSelectFavoriteButtonDisable());
+        setupButtons(selectFavoriteEvent);
         setNameInput.setHeaderText("Enter the name that you want to refer to this webpage as:");
         setNameInput.setOnCloseRequest(onCloseEvent);
     }
 
-    public void setupAddFavoritePopup(){
+    public Node getDisplayComponentsLeftPanel() {
+        return new VBox(description, chooseFavoriteSite, selectFavoriteButton);
+    }
+
+    public Node getAddFavoriteButton() {
+        return addFavoriteButton;
+    }
+
+    public String getSiteToVisit() throws IllegalAccessException{
+        if(chooseFavoriteSite.getValue().equals("")) {
+            throw new IllegalAccessException();
+        }
+        return chooseFavoriteSite.getValue();
+    }
+
+    public void addFavoriteRefToBrowser(NanoBrowser nanoBrowser, TextField myURLDisplay) throws IllegalAccessException {
+        updateFavoriteChoices();
+        nanoBrowser.addReferenceToMap(getInput(), myURLDisplay.getText());
+    }
+
+    private void instantiateNonButtons() {
+        description = new Text("Favorited webpages:");
+        setNameInput = new TextInputDialog();
+        chooseFavoriteSite = new ChoiceBox<>();
+    }
+
+    private void setupButtons(EventHandler<ActionEvent> selectFavoriteEvent) {
+        addFavoriteButton = ButtonMaker.makeButton("Favorite", event -> setupAddFavoritePopup());
+        selectFavoriteButton = ButtonMaker.makeButton("Go to selected site", selectFavoriteEvent);
+        selectFavoriteButton.setDisable(true);
+        addFavoriteButton = ButtonMaker.makeButton("Set Favorite", event -> setupAddFavoritePopup());
+    }
+
+    private void setSelectFavoriteButtonDisable() {
+        selectFavoriteButton.setDisable(setNameInput.getResult().equals(""));
+    }
+
+    private void setupAddFavoritePopup(){
         // Show property was found at
         // https://www.geeksforgeeks.org/javafx-textinputdialog/
         setNameInput.show();
     }
 
-    public Node getChooseFavoriteSite() {
-        return new Group(description, chooseFavoriteSite);
-    }
-
-    public void updateFavoriteChoices() throws IllegalAccessException {
+    private void updateFavoriteChoices() throws IllegalAccessException {
         chooseFavoriteSite.getItems().add(getInput());
     }
 
     // Change exception?
-    public String getInput() throws IllegalAccessException {
+    private String getInput() throws IllegalAccessException {
         if(setNameInput.getResult().equals("")) {
             throw new IllegalAccessException();
         }
         return setNameInput.getResult();
-    }
-
-    public String getSiteToVisit() {
-        return chooseFavoriteSite.getValue();
     }
 }
