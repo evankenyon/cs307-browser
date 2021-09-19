@@ -16,10 +16,6 @@ public class AddFavorite {
         nameToURL.put(ref, new URL(url));
     }
 
-    public boolean doesReferenceHaveURL(String ref) {
-        return nameToURL.containsKey(ref);
-    }
-
     public URL getURLFromReference(String ref) {
         return nameToURL.get(ref);
     }

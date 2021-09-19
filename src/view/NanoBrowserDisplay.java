@@ -2,6 +2,8 @@ package view;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
@@ -44,43 +46,30 @@ public class NanoBrowserDisplay {
     // constants
     public static final String BLANK = " ";
 
-    // web page
     private WebView myPage;
-    // navigation
     private TextField myURLDisplay;
-    // information area
     private Label myStatus;
     private NanoBrowser nanoBrowser;
     private AddFavorite addFavorite;
     private TopSites topSites;
-    private AddFavoriteDisplay addFavoriteDisplay;
+    private FavoritesDisplay favoritesDisplay;
     private TopSitesDisplay topSitesDisplay;
     private Button nextButton;
     private Button backButton;
+    private Button goButton;
+    private Button setHomeButton;
+    private Button goHomeButton;
+
 
     /**
      * Create a web browser with prompts in the given language with initially empty state.
      */
     public NanoBrowserDisplay() {
         nanoBrowser = new NanoBrowser();
-        topSitesDisplay = new TopSitesDisplay();
         topSites = new TopSites();
         addFavorite = new AddFavorite();
-        addFavoriteDisplay = new AddFavoriteDisplay(event -> {
-            try {
-                update(addFavorite.getURLFromReference(addFavoriteDisplay.getSiteToVisit()));
-            } catch (IllegalAccessException e) {
-                //TODO: Make this better
-                e.printStackTrace();
-            }
-        }, event -> {
-            try {
-                addFavoriteDisplay.addFavoriteRefToBrowser(addFavorite, myURLDisplay);
-            } catch (IllegalAccessException | MalformedURLException e) {
-                //TODO: Make this better
-                e.printStackTrace();
-            }
-        });
+        topSitesDisplay = new TopSitesDisplay(event -> update(topSitesDisplay.getSelectedSite()));
+        setupAddFavoriteDisplay();
     }
 
     /**
@@ -88,21 +77,12 @@ public class NanoBrowserDisplay {
      */
     public Scene makeScene (int width, int height) {
         BorderPane root = new BorderPane();
-
         // must be first since other panels may refer to page
         root.setCenter(makePageDisplay());
         root.setTop(makeInputPanel());
         root.setBottom(makeInformationPanel());
         root.setLeft(makeLeftPanel());
-        // create scene to hold UI
         return new Scene(root, width, height);
-    }
-
-    private Node makeLeftPanel() {
-        VBox leftPanel = new VBox();
-        Button goToTopSiteButton = ButtonMaker.makeButton("Go to selected site", event -> update(topSitesDisplay.getSelectedSite()));
-        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), goToTopSiteButton, addFavoriteDisplay.getDisplayComponentsLeftPanel());
-        return leftPanel;
     }
 
     /**
@@ -146,17 +126,64 @@ public class NanoBrowserDisplay {
         alert.showAndWait();
     }
 
+    private void setupAddFavoriteDisplay() {
+        favoritesDisplay = new FavoritesDisplay(event -> {
+            try {
+                update(addFavorite.getURLFromReference(favoritesDisplay.getSiteToVisit()));
+            } catch (IllegalAccessException e) {
+                //TODO: Make this better
+                e.printStackTrace();
+            }
+        }, event -> {
+            try {
+                favoritesDisplay.addFavoriteRefToBrowser(addFavorite, myURLDisplay);
+            } catch (IllegalAccessException | MalformedURLException e) {
+                //TODO: Make this better
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private Node makeLeftPanel() {
+        VBox leftPanel = new VBox();
+        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), favoritesDisplay.getDisplayComponentsLeftPanel());
+        return leftPanel;
+    }
+
     // Make user-entered URL/text field and back/next buttons
     private Node makeInputPanel () {
-        HBox result = new HBox();
-        // create buttons, with their associated actions
+        setupHistoryButtons();
+        setupShowHandlerDependentNodes();
+        setupSetHomeButton();
+        setupGoHomeButton();
+        return new HBox(backButton, nextButton, goButton, setHomeButton, goHomeButton, favoritesDisplay.getAddFavoriteButton(), myURLDisplay);
+    }
+
+    private void setupHistoryButtons() {
         backButton = ButtonMaker.makeButton("Back", event -> update(nanoBrowser.back()));
         nextButton = ButtonMaker.makeButton("Next", event -> update(nanoBrowser.next()));
+    }
+
+    private void setupShowHandlerDependentNodes() {
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
-        Button goButton = ButtonMaker.makeButton("Go", showHandler);
-        Button setHomeButton = ButtonMaker.makeButton("Set Home", event -> nanoBrowser.setHome());
-        Button goHomeButton = ButtonMaker.makeButton("Go Home", event -> {
+        goButton = ButtonMaker.makeButton("Go", showHandler);
+        myURLDisplay = makeInputField(40, showHandler);
+        myURLDisplay.textProperty().addListener(event -> {
+            System.out.println((myURLDisplay.getText()));
+            goButton.setDisable(myURLDisplay.getText().equals(""));
+        });
+    }
+
+    private void setupSetHomeButton() {
+        setHomeButton = ButtonMaker.makeButton("Set Home", event -> {
+            nanoBrowser.setHome();
+            goHomeButton.setDisable(false);
+        });
+    }
+
+    private void setupGoHomeButton() {
+        goHomeButton = ButtonMaker.makeButton("Go Home", event -> {
             try {
                 update(nanoBrowser.getHome());
             } catch (NullPointerException e) {
@@ -164,9 +191,7 @@ public class NanoBrowserDisplay {
                 e.printStackTrace();
             }
         });
-        myURLDisplay = makeInputField(40, showHandler);
-        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteDisplay.getAddFavoriteButton(), myURLDisplay);
-        return result;
+        goHomeButton.setDisable(true);
     }
 
     // Make panel where "would-be" clicked URL is displayed

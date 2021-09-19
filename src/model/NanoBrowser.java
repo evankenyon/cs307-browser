@@ -12,8 +12,6 @@ public class NanoBrowser {
     private int myCurrentIndex;
     private List<URL> myHistory;
 
-
-
     public NanoBrowser() {
         myCurrentURL = null;
         homeURL = null;

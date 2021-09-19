@@ -13,7 +13,7 @@ import util.ButtonMaker;
 
 import java.net.MalformedURLException;
 
-public class AddFavoriteDisplay {
+public class FavoritesDisplay {
     private TextInputDialog setNameInput;
     private ChoiceBox<String> chooseFavoriteSite;
     private Text description;
@@ -23,7 +23,7 @@ public class AddFavoriteDisplay {
 
     // Set up code was borrowed from
     // https://www.geeksforgeeks.org/javafx-textinputdialog/
-    public AddFavoriteDisplay(EventHandler<ActionEvent> selectFavoriteEvent, EventHandler<DialogEvent> onCloseEvent) {
+    public FavoritesDisplay(EventHandler<ActionEvent> selectFavoriteEvent, EventHandler<DialogEvent> onCloseEvent) {
         instantiateNonButtons();
         chooseFavoriteSite.setOnAction(event -> setSelectFavoriteButtonDisable());
         setupButtons(selectFavoriteEvent);
@@ -31,6 +31,7 @@ public class AddFavoriteDisplay {
         setNameInput.setOnCloseRequest(onCloseEvent);
     }
 
+    // Rename
     public Node getDisplayComponentsLeftPanel() {
         return new VBox(description, chooseFavoriteSite, selectFavoriteButton);
     }
