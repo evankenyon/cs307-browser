@@ -11,8 +11,7 @@ public class NanoBrowser {
     private URL homeURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
-    private AddFavorite addFavorite;
-    private TopSites topSites;
+
 
 
     public NanoBrowser() {
@@ -20,8 +19,6 @@ public class NanoBrowser {
         homeURL = null;
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
-        addFavorite = new AddFavorite();
-        topSites = new TopSites();
     }
 
     // Move to next URL in the history
@@ -66,22 +63,6 @@ public class NanoBrowser {
             return myCurrentURL;
         }
         throw new IOException();
-    }
-
-    public void addReferenceToMap(String ref, String url) {
-        addFavorite.addReferenceToMap(ref, completeURL(url));
-    }
-
-    public void incrementURLFrequency(URL url) {
-        topSites.incrementURLFrequency(url);
-    }
-
-    public List<URL> getUrlsFreqOrdered() {
-        return topSites.getUrlsFreqOrdered();
-    }
-
-    public URL getURLFromReference(String ref) {
-        return addFavorite.getURLFromReference(ref);
     }
 
     private void addURLToHistory(URL url) {

@@ -1,5 +1,6 @@
 package view;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,7 +16,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import model.AddFavorite;
 import model.NanoBrowser;
+import model.TopSites;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -48,9 +51,10 @@ public class NanoBrowserDisplay {
     // information area
     private Label myStatus;
     private NanoBrowser nanoBrowser;
+    private AddFavorite addFavorite;
+    private TopSites topSites;
     private AddFavoriteDisplay addFavoriteDisplay;
     private TopSitesDisplay topSitesDisplay;
-
     private Button nextButton;
     private Button backButton;
 
@@ -60,17 +64,19 @@ public class NanoBrowserDisplay {
     public NanoBrowserDisplay() {
         nanoBrowser = new NanoBrowser();
         topSitesDisplay = new TopSitesDisplay();
+        topSites = new TopSites();
+        addFavorite = new AddFavorite();
         addFavoriteDisplay = new AddFavoriteDisplay(event -> {
             try {
-                update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit()));
+                update(addFavorite.getURLFromReference(addFavoriteDisplay.getSiteToVisit()));
             } catch (IllegalAccessException e) {
                 //TODO: Make this better
                 e.printStackTrace();
             }
         }, event -> {
             try {
-                addFavoriteDisplay.addFavoriteRefToBrowser(nanoBrowser, myURLDisplay);
-            } catch (IllegalAccessException e) {
+                addFavoriteDisplay.addFavoriteRefToBrowser(addFavorite, myURLDisplay);
+            } catch (IllegalAccessException | MalformedURLException e) {
                 //TODO: Make this better
                 e.printStackTrace();
             }
@@ -121,8 +127,8 @@ public class NanoBrowserDisplay {
     }
 
     private void updateBesidesView(URL url) {
-        nanoBrowser.incrementURLFrequency(url);
-        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
+        topSites.incrementURLFrequency(url);
+        topSitesDisplay.updateTopSites(topSites.getUrlsFreqOrdered());
         backButton.setDisable(!nanoBrowser.hasBack());
         nextButton.setDisable(!nanoBrowser.hasNext());
     }

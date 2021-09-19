@@ -7,8 +7,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import model.AddFavorite;
 import model.NanoBrowser;
 import util.ButtonMaker;
+
+import java.net.MalformedURLException;
 
 public class AddFavoriteDisplay {
     private TextInputDialog setNameInput;
@@ -43,9 +46,9 @@ public class AddFavoriteDisplay {
         return chooseFavoriteSite.getValue();
     }
 
-    public void addFavoriteRefToBrowser(NanoBrowser nanoBrowser, TextField myURLDisplay) throws IllegalAccessException {
+    public void addFavoriteRefToBrowser(AddFavorite addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
         updateFavoriteChoices();
-        nanoBrowser.addReferenceToMap(getInput(), myURLDisplay.getText());
+        addFavorite.addReferenceToMap(getInput(), myURLDisplay.getText());
     }
 
     private void instantiateNonButtons() {
