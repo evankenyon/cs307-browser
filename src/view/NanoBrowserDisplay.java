@@ -49,6 +49,9 @@ public class NanoBrowserDisplay {
     private NanoBrowser nanoBrowser;
     private AddFavoriteDisplay addFavoriteDisplay;
     private TopSitesDisplay topSitesDisplay;
+    private Button selectFavoriteButton;
+    private Button nextButton;
+    private Button backButton;
 
     /**
      * Create a web browser with prompts in the given language with initially empty state.
@@ -76,7 +79,8 @@ public class NanoBrowserDisplay {
     private Node makeLeftPanel() {
         VBox leftPanel = new VBox();
         Button goToTopSiteButton = makeButton("Go to selected site", event -> update(topSitesDisplay.getSelectedSite()));
-        Button selectFavoriteButton = makeButton("Go to selected site", event -> update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit())));
+        selectFavoriteButton = makeButton("Go to selected site", event -> update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit())));
+        selectFavoriteButton.setDisable(true);
         leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), goToTopSiteButton, addFavoriteDisplay.getChooseFavoriteSite(), selectFavoriteButton);
         return leftPanel;
     }
@@ -96,11 +100,17 @@ public class NanoBrowserDisplay {
 
     // Update just the view to display given URL
     private void update (URL url) {
-        nanoBrowser.incrementURLFrequency(url);
-        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
+        updateBesidesView(url);
         String urlText = url.toString();
         myPage.getEngine().load(urlText);
         myURLDisplay.setText(urlText);
+    }
+
+    private void updateBesidesView(URL url) {
+        nanoBrowser.incrementURLFrequency(url);
+        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
+        backButton.setDisable(!nanoBrowser.hasBack());
+        nextButton.setDisable(!nanoBrowser.hasNext());
     }
 
     // Display given message as information in the GUI
@@ -120,8 +130,8 @@ public class NanoBrowserDisplay {
     private Node makeInputPanel () {
         HBox result = new HBox();
         // create buttons, with their associated actions
-        Button backButton = makeButton("Back", event -> update(nanoBrowser.back()));
-        Button nextButton = makeButton("Next", event -> update(nanoBrowser.next()));
+        backButton = makeButton("Back", event -> update(nanoBrowser.back()));
+        nextButton = makeButton("Next", event -> update(nanoBrowser.next()));
         // if user presses button or enter in text field, load/show the URL
         EventHandler<ActionEvent> showHandler = event -> showPage(myURLDisplay.getText());
         Button goButton = makeButton("Go", showHandler);
@@ -150,6 +160,7 @@ public class NanoBrowserDisplay {
 
 
     private void addFavoriteRefToBrowser() throws IllegalAccessException {
+        selectFavoriteButton.setDisable(false);
         addFavoriteDisplay.updateFavoriteChoices();
         nanoBrowser.addReferenceToMap(addFavoriteDisplay.getInput(), myURLDisplay.getText());
     }
@@ -184,7 +195,6 @@ public class NanoBrowserDisplay {
         result.setOnAction(handler);
         return result;
     }
-
 
     // Inner class to deal with link-clicks and mouse-overs Mostly taken from
     //   http://blogs.kiyut.com/tonny/2013/07/30/javafx-webview-addhyperlinklistener/

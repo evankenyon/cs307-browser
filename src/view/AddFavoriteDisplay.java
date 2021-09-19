@@ -14,6 +14,7 @@ public class AddFavoriteDisplay {
     private Text description;
 
 
+
     // Set up code was borrowed from
     // https://www.geeksforgeeks.org/javafx-textinputdialog/
     public AddFavoriteDisplay(EventHandler<DialogEvent> onCloseEvent) {

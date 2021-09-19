@@ -114,7 +114,11 @@ public class NanoBrowser {
     }
 
     // Returns true if there is a next URL available
-    private boolean hasNext () {
+    public boolean hasNext () {
         return myCurrentIndex < (myHistory.size() - 1);
+    }
+
+    public boolean hasBack () {
+        return myCurrentIndex > 0;
     }
 }
