@@ -9,14 +9,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import model.NanoBrowser;
 import org.w3c.dom.Document;
@@ -25,7 +22,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.html.HTMLOptGroupElement;
 
 
 /**
@@ -59,6 +55,7 @@ public class NanoBrowserDisplay {
      */
     public NanoBrowserDisplay() {
         nanoBrowser = new NanoBrowser();
+        topSitesDisplay = new TopSitesDisplay();
     }
 
     /**
@@ -71,8 +68,17 @@ public class NanoBrowserDisplay {
         root.setCenter(makePageDisplay());
         root.setTop(makeInputPanel());
         root.setBottom(makeInformationPanel());
+        root.setLeft(makeLeftPanel());
         // create scene to hold UI
         return new Scene(root, width, height);
+    }
+
+    private Node makeLeftPanel() {
+        VBox leftPanel = new VBox();
+        Button goToTopSiteButton = makeButton("Go to selected site", event -> update(topSitesDisplay.getSelectedSite()));
+        Button selectFavoriteButton = makeButton("Go to selected site", event -> update(nanoBrowser.getURLFromReference(addFavoriteDisplay.getSiteToVisit())));
+        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), goToTopSiteButton, addFavoriteDisplay.getChooseFavoriteSite(), selectFavoriteButton);
+        return leftPanel;
     }
 
     /**
@@ -90,6 +96,8 @@ public class NanoBrowserDisplay {
 
     // Update just the view to display given URL
     private void update (URL url) {
+        nanoBrowser.incrementURLFrequency(url);
+        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
         String urlText = url.toString();
         myPage.getEngine().load(urlText);
         myURLDisplay.setText(urlText);
@@ -127,20 +135,22 @@ public class NanoBrowserDisplay {
             }
         });
         Button addFavoriteButton = makeButton("Set Favorite", event -> addFavoriteDisplay.setupAddFavoritePopup());
-        Button getTopSitesDisplay = makeButton("Top Sites", event -> setupTopSitesDisplay());
         myURLDisplay = makeInputField(40, showHandler);
-        addFavoriteDisplay = new AddFavoriteDisplay(event -> addFavoriteRef());
-        topSitesDisplay = new TopSitesDisplay();
-        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, getTopSitesDisplay, myURLDisplay);
+        addFavoriteDisplay = new AddFavoriteDisplay(event -> {
+            try {
+                addFavoriteRefToBrowser();
+            } catch (IllegalAccessException e) {
+                // TODO: Make better
+                e.printStackTrace();
+            }
+        });
+        result.getChildren().addAll(backButton, nextButton, goButton, setHomeButton, goHomeButton, addFavoriteButton, myURLDisplay);
         return result;
     }
 
-    private void setupTopSitesDisplay() {
-        topSitesDisplay.updateTopSites(nanoBrowser.getUrlsFreqOrdered());
-        topSitesDisplay.setupTopSitesPopup();
-    }
 
-    private void addFavoriteRef() {
+    private void addFavoriteRefToBrowser() throws IllegalAccessException {
+        addFavoriteDisplay.updateFavoriteChoices();
         nanoBrowser.addReferenceToMap(addFavoriteDisplay.getInput(), myURLDisplay.getText());
     }
 

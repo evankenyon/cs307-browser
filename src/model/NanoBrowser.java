@@ -27,17 +27,13 @@ public class NanoBrowser {
     // Move to next URL in the history
     public URL next () {
         myCurrentIndex += 1;
-        URL nextUrl = myHistory.get(myCurrentIndex);
-        incrementURLFrequency(nextUrl);
-        return nextUrl;
+        return myHistory.get(myCurrentIndex);
     }
 
     // Move to previous URL in the history
     public URL back () {
         myCurrentIndex -= 1;
-        URL prevUrl = myHistory.get(myCurrentIndex);
-        incrementURLFrequency(prevUrl);
-        return prevUrl;
+        return myHistory.get(myCurrentIndex);
     }
 
     public void setHome() {
@@ -54,19 +50,13 @@ public class NanoBrowser {
     }
 
     public URL handleNewURL(String url) throws IOException {
-        URL tmp;
-        if(addFavorite.doesReferenceHaveURL(url)) {
-            tmp = addFavorite.getURLFromReference(url);
-        } else {
-            tmp = completeURL(url);
-        }
+        URL tmp = completeURL(url);
         if (tmp != null) {
             // unfortunately, completeURL may not have returned a valid URL, so test it
             tmp.openStream();
             // if successful, remember this URL
             myCurrentURL = tmp;
             addURLToHistory(myCurrentURL);
-            topSites.incrementURLFrequency(myCurrentURL);
             return myCurrentURL;
         }
         throw new IOException();
@@ -76,7 +66,7 @@ public class NanoBrowser {
         addFavorite.addReferenceToMap(ref, completeURL(url));
     }
 
-    private void incrementURLFrequency(URL url) {
+    public void incrementURLFrequency(URL url) {
         topSites.incrementURLFrequency(url);
     }
 
@@ -84,12 +74,15 @@ public class NanoBrowser {
         return topSites.getUrlsFreqOrdered();
     }
 
+    public URL getURLFromReference(String ref) {
+        return addFavorite.getURLFromReference(ref);
+    }
+
     private void addURLToHistory(URL url) {
         if (hasNext()) {
             myHistory = myHistory.subList(0, myCurrentIndex + 1);
         }
         myHistory.add(url);
-        incrementURLFrequency(url);
         myCurrentIndex += 1;
     }
 

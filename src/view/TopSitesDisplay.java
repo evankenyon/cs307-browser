@@ -1,32 +1,34 @@
 package view;
 
-import javafx.scene.control.ChoiceDialog;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TopSitesDisplay {
-    private ChoiceDialog<String> topSitesChoice;
+    private Text description;
+    private Text breakLine;
+    private ListView<URL> topSitesList;
 
     public TopSitesDisplay() {
-        topSitesChoice = new ChoiceDialog<>();
-        topSitesChoice.getItems().addAll();
+        description = new Text("Most viewed webpages:");
+        breakLine = new Text();
+        topSitesList = new ListView<>();
     }
 
-    public void setupTopSitesPopup(){
-        // Show property was found at
-        // https://www.geeksforgeeks.org/javafx-textinputdialog/
-        topSitesChoice.show();
+    public Node getTopSitesDisplay() {
+        return new Group(description, breakLine, topSitesList);
+    }
+
+    public URL getSelectedSite() {
+        return topSitesList.getSelectionModel().getSelectedItem();
     }
 
     public void updateTopSites(List<URL> topSitesList) {
-        System.out.println(topSitesList);
-        List<String> topSitesString = new ArrayList<>();
-        for(URL url: topSitesList) {
-            topSitesString.add(url.toString());
-        }
-        this.topSitesChoice.getItems().clear();
-        this.topSitesChoice.getItems().addAll(topSitesString);
+        this.topSitesList.getItems().clear();
+        this.topSitesList.getItems().addAll(topSitesList);
     }
 }
