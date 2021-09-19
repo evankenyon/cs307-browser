@@ -2,7 +2,6 @@ package view;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
