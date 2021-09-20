@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Purpose:
- * Assumptions:
- * Dependencies:
- * Example:
- * Other details:
+ * Purpose: Represent a model of a web browser to be used as the backend for NanoBrowserDisplay
+ * Assumptions: Methods are used in display class appropriately (i.e. next and back are not called
+ * when the user did not actually perform those actions)
+ * Dependencies: IOException, MalformedURLException, URL, ArrayList, List
+ * Example: Construct a NanoBrowserModel object in NanoBrowserDisplay to serve as the backend,
+ * dealing with new URLs, going back/forward, and other basic features
  *
  * @Author Evan Kenyon
  */
@@ -22,8 +23,8 @@ public class NanoBrowserModel {
     private HomeModel homeModel;
 
     /**
-     * Purpose:
-     * Assumptions:
+     * Purpose: Construct a NanoBrowserModel by instantiating member
+     * variables to basic values
      */
     public NanoBrowserModel() {
         myCurrentURL = null;
@@ -33,12 +34,11 @@ public class NanoBrowserModel {
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @return
-     * @throws IndexOutOfBoundsException
+     * Purpose: Get next URL in history
+     * @return next URL in history
+     * @throws IndexOutOfBoundsException thrown if there is no next URL in history
+     * (i.e. if user is at most recent URL)
      */
-    // Move to next URL in the history
     public URL next() throws IndexOutOfBoundsException{
         myCurrentIndex += 1;
         if(myCurrentIndex >= myHistory.size()) {
@@ -48,10 +48,10 @@ public class NanoBrowserModel {
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @return
-     * @throws IndexOutOfBoundsException
+     * Purpose: Get previous URL in history
+     * @return previous URL in history
+     * @throws IndexOutOfBoundsException thorwn if there is no previous URL in history
+     * (i.e. user is at first URL in history)
      */
     // Move to previous URL in the history
     public URL back () throws IndexOutOfBoundsException{
@@ -63,21 +63,20 @@ public class NanoBrowserModel {
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @throws MalformedURLException
+     * Purpose: Uses a HomeModel object to set the home URL to
+     * myCurrentURL
+     * Assumptions: homeModel is properly instantiated
      */
-    public void setHome() throws MalformedURLException {
+    public void setHome() {
         homeModel.setHome(myCurrentURL);
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @return
-     * @throws NullPointerException
+     * Purpose: Get the home URL using a HomeModel object
+     * Assumptions: homeModel is properly instantiated
+     * @return the home URL
+     * @throws NullPointerException thrown if homeURL has not been set
      */
-    // TODO: Change exception type?
     public URL getHome() throws NullPointerException{
         URL homeURL = homeModel.getHome();
         addURLToHistory(homeURL);
@@ -85,11 +84,13 @@ public class NanoBrowserModel {
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @param url
-     * @return
-     * @throws IOException
+     * Purpose: Handle user going to a new URL by constructing a URL
+     * using url argument, making sure its successful, adding it to history,
+     * and returning it for display to show page corresponding to the URL
+     * @param url url to visit/String to use in URL constructor
+     * @return URL object corresponding to url String argument
+     * @throws IOException thrown if internal completeURL function does not
+     * return a valid URL
      */
     public URL handleNewURL(String url) throws IOException {
         URL tmp = completeURL(url);
@@ -112,11 +113,18 @@ public class NanoBrowserModel {
         myCurrentIndex += 1;
     }
 
-    // Returns true if there is a next URL available
+    /**
+     * Purpose (comment borrowed from Prof. Duvall): Returns true if there is a next URL available
+     * @return true if there is a next URL available
+     */
     public boolean hasNext () {
         return myCurrentIndex < (myHistory.size() - 1);
     }
 
+    /**
+     * Purpose: Returns true if there is a previous URL available
+     * @return true if there is a previous URL available
+     */
     public boolean hasBack () {
         return myCurrentIndex > 0;
     }
