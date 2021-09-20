@@ -20,8 +20,9 @@ public class TopSitesDisplay {
     public TopSitesDisplay(EventHandler<ActionEvent> onPressButton) {
         description = new Text("Most viewed webpages:");
         topSitesList = new ListView<>();
+        topSitesList.setOnMouseClicked(event -> setGoToTopSiteButtonDisabled());
         goToTopSiteButton = ButtonMaker.makeButton("Go to selected site", onPressButton);
-        goToTopSiteButton.getOnAction();
+        goToTopSiteButton.setDisable(true);
     }
 
     public Node getTopSitesDisplay() {
@@ -35,5 +36,9 @@ public class TopSitesDisplay {
     public void updateTopSites(List<URL> topSitesList) {
         this.topSitesList.getItems().clear();
         this.topSitesList.getItems().addAll(topSitesList);
+    }
+
+    private void setGoToTopSiteButtonDisabled() {
+        goToTopSiteButton.setDisable(topSitesList.getSelectionModel().getSelectedItem() == null);
     }
 }
