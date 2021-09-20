@@ -15,7 +15,7 @@ public class HomeDisplay {
 
     public HomeDisplay(EventHandler<ActionEvent> setHomeButtonEvent, EventHandler<ActionEvent> goHomeButtonEvent) {
         setHomeButton = ButtonMaker.makeButton("Set Home", setHomeButtonEvent);
-        goHomeButton = ButtonMaker.makeButton("Set Home", setHomeButtonEvent);
+        goHomeButton = ButtonMaker.makeButton("Go Home", setHomeButtonEvent);
         goHomeButton.setDisable(true);
     }
 

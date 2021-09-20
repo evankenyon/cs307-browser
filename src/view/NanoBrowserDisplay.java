@@ -155,7 +155,7 @@ public class NanoBrowserDisplay {
         setupHistoryButtons();
         setupShowHandlerDependentNodes();
         setupHomeDisplay();
-        return new HBox(backButton, nextButton, goButton, homeDisplay.getHomeDisplay(), favoritesDisplay.getAddFavoriteButton(), myURLDisplay);
+        return new HBox(backButton, nextButton, goButton, homeDisplay.getHomeDisplay(), myURLDisplay);
     }
 
     private void setupHomeDisplay() {
@@ -180,7 +180,6 @@ public class NanoBrowserDisplay {
         goButton = ButtonMaker.makeButton("Go", showHandler);
         myURLDisplay = makeInputField(40, showHandler);
         myURLDisplay.textProperty().addListener(event -> {
-            System.out.println((myURLDisplay.getText()));
             goButton.setDisable(myURLDisplay.getText().equals(""));
         });
     }

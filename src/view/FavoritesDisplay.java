@@ -19,6 +19,7 @@ public class FavoritesDisplay {
     private Text description;
     private Button addFavoriteButton;
     private Button selectFavoriteButton;
+    private boolean wasCancelPressed;
 
 
     // Set up code was borrowed from
@@ -29,15 +30,15 @@ public class FavoritesDisplay {
         setupButtons(selectFavoriteEvent);
         setNameInput.setHeaderText("Enter the name that you want to refer to this webpage as:");
         setNameInput.setOnCloseRequest(onCloseEvent);
+        // Borrowed code for line below from
+        // https://stackoverflow.com/questions/31673853/javafx-how-to-know-if-cancel-was-pressed
+        setNameInput.getDialogPane().lookupButton(ButtonType.CANCEL).addEventFilter(ActionEvent.ACTION, event -> wasCancelPressed = true);
     }
 
     public Node getDisplayComponentsLeftPanel() {
-        return new VBox(description, chooseFavoriteSite, selectFavoriteButton);
+        return new VBox(addFavoriteButton, description, chooseFavoriteSite, selectFavoriteButton);
     }
 
-    public Node getAddFavoriteButton() {
-        return addFavoriteButton;
-    }
 
     public String getSiteToVisit() throws IllegalAccessException{
         if(chooseFavoriteSite.getValue().equals("")) {
@@ -47,8 +48,10 @@ public class FavoritesDisplay {
     }
 
     public void addFavoriteRefToBrowser(AddFavorite addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
-        updateFavoriteChoices();
-        addFavorite.addReferenceToMap(getInput(), myURLDisplay.getText());
+        if(!wasCancelPressed) {
+            updateFavoriteChoices();
+            addFavorite.addReferenceToMap(getInput(), myURLDisplay.getText());
+        }
     }
 
     private void instantiateNonButtons() {
@@ -58,10 +61,9 @@ public class FavoritesDisplay {
     }
 
     private void setupButtons(EventHandler<ActionEvent> selectFavoriteEvent) {
-        addFavoriteButton = ButtonMaker.makeButton("Favorite", event -> setupAddFavoritePopup());
         selectFavoriteButton = ButtonMaker.makeButton("Go to selected site", selectFavoriteEvent);
         selectFavoriteButton.setDisable(true);
-        addFavoriteButton = ButtonMaker.makeButton("Set Favorite", event -> setupAddFavoritePopup());
+        addFavoriteButton = ButtonMaker.makeButton("Set current website as favorite", event -> setupAddFavoritePopup());
     }
 
     private void setSelectFavoriteButtonDisable() {
