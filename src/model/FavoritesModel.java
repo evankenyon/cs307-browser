@@ -14,14 +14,14 @@ import java.util.Map;
  *
  * @Author Evan Kenyon
  */
-public class AddFavorite {
+public class FavoritesModel {
     private Map<String, URL> nameToURL;
 
     /**
      * Purpose:
      * Assumptions:
      */
-    public AddFavorite() {
+    public FavoritesModel() {
         nameToURL = new HashMap<>();
     }
 

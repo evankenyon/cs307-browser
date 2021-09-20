@@ -15,21 +15,21 @@ import java.util.List;
  *
  * @Author Evan Kenyon
  */
-public class NanoBrowser {
+public class NanoBrowserModel {
     private URL myCurrentURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
-    private Home home;
+    private HomeModel homeModel;
 
     /**
      * Purpose:
      * Assumptions:
      */
-    public NanoBrowser() {
+    public NanoBrowserModel() {
         myCurrentURL = null;
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
-        home = new Home();
+        homeModel = new HomeModel();
     }
 
     /**
@@ -68,7 +68,7 @@ public class NanoBrowser {
      * @throws MalformedURLException
      */
     public void setHome() throws MalformedURLException {
-        home.setHome(myCurrentURL);
+        homeModel.setHome(myCurrentURL);
     }
 
     /**
@@ -79,7 +79,7 @@ public class NanoBrowser {
      */
     // TODO: Change exception type?
     public URL getHome() throws NullPointerException{
-        URL homeURL = home.getHome();
+        URL homeURL = homeModel.getHome();
         addURLToHistory(homeURL);
         return homeURL;
     }

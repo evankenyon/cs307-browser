@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @Author Evan Kenyon
  */
-public class TopSites {
+public class TopSitesModel {
     private Map<URL, Integer> siteFreq;
     private List<URL> urlsFreqOrdered;
 
@@ -20,7 +20,7 @@ public class TopSites {
      * Purpose:
      * Assumptions:
      */
-    public TopSites() {
+    public TopSitesModel() {
         siteFreq = new HashMap<>();
         urlsFreqOrdered = new ArrayList<>();
     }

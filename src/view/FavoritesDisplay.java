@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import model.AddFavorite;
+import model.FavoritesModel;
 import util.ButtonMaker;
 
 import java.net.MalformedURLException;
@@ -78,7 +78,7 @@ public class FavoritesDisplay {
      * @throws IllegalAccessException
      * @throws MalformedURLException
      */
-    public void addFavoriteRefToBrowser(AddFavorite addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
+    public void addFavoriteRefToBrowser(FavoritesModel addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
         if(!wasCancelPressed) {
             updateFavoriteChoices();
             addFavorite.addReferenceToMap(getInput(), myURLDisplay.getText());

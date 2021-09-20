@@ -7,19 +7,19 @@ import java.net.MalformedURLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddFavoriteTest {
-    private AddFavorite addFavorite;
+class FavoritesModelTest {
+    private FavoritesModel favoritesModel;
     private String testURLOne;
 
     @BeforeEach
     void setUp() {
-      addFavorite = new AddFavorite();
+      favoritesModel = new FavoritesModel();
       testURLOne = "http://google.com";
     }
 
     @Test
     void correctClassUsage() throws MalformedURLException {
-        addFavorite.addReferenceToMap("test", testURLOne);
-        assertEquals(testURLOne, addFavorite.getURLFromReference("test").toString());
+        favoritesModel.addReferenceToMap("test", testURLOne);
+        assertEquals(testURLOne, favoritesModel.getURLFromReference("test").toString());
     }
 }

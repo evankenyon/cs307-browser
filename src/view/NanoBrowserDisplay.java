@@ -17,9 +17,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
-import model.AddFavorite;
-import model.NanoBrowser;
-import model.TopSites;
+import model.FavoritesModel;
+import model.NanoBrowserModel;
+import model.TopSitesModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,9 +49,9 @@ public class NanoBrowserDisplay {
     private WebView myPage;
     private TextField myURLDisplay;
     private Label myStatus;
-    private NanoBrowser nanoBrowser;
-    private AddFavorite addFavorite;
-    private TopSites topSites;
+    private NanoBrowserModel nanoBrowserModel;
+    private FavoritesModel favoritesModel;
+    private TopSitesModel topSitesModel;
     private FavoritesDisplay favoritesDisplay;
     private TopSitesDisplay topSitesDisplay;
     private HomeDisplay homeDisplay;
@@ -65,9 +65,9 @@ public class NanoBrowserDisplay {
      * Assumptions:
      */
     public NanoBrowserDisplay() {
-        nanoBrowser = new NanoBrowser();
-        topSites = new TopSites();
-        addFavorite = new AddFavorite();
+        nanoBrowserModel = new NanoBrowserModel();
+        topSitesModel = new TopSitesModel();
+        favoritesModel = new FavoritesModel();
         topSitesDisplay = new TopSitesDisplay(event -> update(topSitesDisplay.getSelectedSite()));
         setupAddFavoriteDisplay();
     }
@@ -92,7 +92,7 @@ public class NanoBrowserDisplay {
      */
     public void showPage (String url) {
         try {
-            update(nanoBrowser.handleNewURL(url));
+            update(nanoBrowserModel.handleNewURL(url));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -109,10 +109,10 @@ public class NanoBrowserDisplay {
     }
 
     private void updateBesidesView(URL url) {
-        topSites.incrementURLFrequency(url);
-        topSitesDisplay.updateTopSites(topSites.getUrlsFreqOrdered());
-        backButton.setDisable(!nanoBrowser.hasBack());
-        nextButton.setDisable(!nanoBrowser.hasNext());
+        topSitesModel.incrementURLFrequency(url);
+        topSitesDisplay.updateTopSites(topSitesModel.getUrlsFreqOrdered());
+        backButton.setDisable(!nanoBrowserModel.hasBack());
+        nextButton.setDisable(!nanoBrowserModel.hasNext());
     }
 
     // Display given message as information in the GUI
@@ -131,14 +131,14 @@ public class NanoBrowserDisplay {
     private void setupAddFavoriteDisplay() {
         favoritesDisplay = new FavoritesDisplay(event -> {
             try {
-                update(addFavorite.getURLFromReference(favoritesDisplay.getSiteToVisit()));
+                update(favoritesModel.getURLFromReference(favoritesDisplay.getSiteToVisit()));
             } catch (IllegalAccessException e) {
                 //TODO: Make this better
                 e.printStackTrace();
             }
         }, event -> {
             try {
-                favoritesDisplay.addFavoriteRefToBrowser(addFavorite, myURLDisplay);
+                favoritesDisplay.addFavoriteRefToBrowser(favoritesModel, myURLDisplay);
             } catch (IllegalAccessException | MalformedURLException e) {
                 //TODO: Make this better
                 e.printStackTrace();
@@ -163,17 +163,17 @@ public class NanoBrowserDisplay {
     private void setupHomeDisplay() {
         homeDisplay = new HomeDisplay(event -> {
             try {
-                nanoBrowser.setHome();
+                nanoBrowserModel.setHome();
                 homeDisplay.enableGoHomeButton();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-        }, event -> update(nanoBrowser.getHome()));
+        }, event -> update(nanoBrowserModel.getHome()));
     }
 
     private void setupHistoryButtons() {
-        backButton = ButtonMaker.makeButton("Back", event -> update(nanoBrowser.back()));
-        nextButton = ButtonMaker.makeButton("Next", event -> update(nanoBrowser.next()));
+        backButton = ButtonMaker.makeButton("Back", event -> update(nanoBrowserModel.back()));
+        nextButton = ButtonMaker.makeButton("Next", event -> update(nanoBrowserModel.next()));
     }
 
     private void setupShowHandlerDependentNodes() {

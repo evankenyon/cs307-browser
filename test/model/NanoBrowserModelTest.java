@@ -8,14 +8,14 @@ import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NanoBrowserTest {
-    private NanoBrowser nanoBrowser;
+public class NanoBrowserModelTest {
+    private NanoBrowserModel nanoBrowser;
     private String testURLOne;
     private String testURLTwo;
 
     @BeforeEach
     public void setUp() {
-        nanoBrowser = new NanoBrowser();
+        nanoBrowser = new NanoBrowserModel();
         testURLOne = "http://google.com";
         testURLTwo = "http://yahoo.com";
     }

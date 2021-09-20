@@ -11,7 +11,7 @@ import java.net.URL;
  *
  * @Author Evan Kenyon
  */
-public class Home {
+public class HomeModel {
     private URL homeURL;
 
     /**

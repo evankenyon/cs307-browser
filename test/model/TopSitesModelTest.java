@@ -9,24 +9,24 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TopSitesTest {
-    private TopSites topSites;
+class TopSitesModelTest {
+    private TopSitesModel topSitesModel;
     private URL testURLOne;
     private URL testURLTwo;
 
     @BeforeEach
     void setUp() throws MalformedURLException {
-        topSites = new TopSites();
+        topSitesModel = new TopSitesModel();
         testURLOne = new URL("http://google.com");
         testURLTwo = new URL("http://yahoo.com");
     }
 
     @Test
     void testGetUrlsFreqOrdered() {
-        topSites.incrementURLFrequency(testURLOne);
-        topSites.incrementURLFrequency(testURLOne);
-        topSites.incrementURLFrequency(testURLTwo);
-        List<URL> orderedURLs = topSites.getUrlsFreqOrdered();
+        topSitesModel.incrementURLFrequency(testURLOne);
+        topSitesModel.incrementURLFrequency(testURLOne);
+        topSitesModel.incrementURLFrequency(testURLTwo);
+        List<URL> orderedURLs = topSitesModel.getUrlsFreqOrdered();
         assertEquals(orderedURLs.get(0), testURLOne);
         assertEquals(orderedURLs.get(1), testURLTwo);
     }
