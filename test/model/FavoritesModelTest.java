@@ -12,13 +12,13 @@ class FavoritesModelTest {
     private String testURLOne;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
       favoritesModel = new FavoritesModel();
       testURLOne = "http://google.com";
     }
 
     @Test
-    void correctClassUsage() throws MalformedURLException {
+    public void correctClassUsage() throws MalformedURLException {
         favoritesModel.addReferenceToMap("test", testURLOne);
         assertEquals(testURLOne, favoritesModel.getURLFromReference("test").toString());
     }

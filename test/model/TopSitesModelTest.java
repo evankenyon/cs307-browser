@@ -15,14 +15,14 @@ class TopSitesModelTest {
     private URL testURLTwo;
 
     @BeforeEach
-    void setUp() throws MalformedURLException {
+    public void setUp() throws MalformedURLException {
         topSitesModel = new TopSitesModel();
         testURLOne = new URL("http://google.com");
         testURLTwo = new URL("http://yahoo.com");
     }
 
     @Test
-    void testGetUrlsFreqOrdered() {
+    public void testGetUrlsFreqOrdered() {
         topSitesModel.incrementURLFrequency(testURLOne);
         topSitesModel.incrementURLFrequency(testURLOne);
         topSitesModel.incrementURLFrequency(testURLTwo);
