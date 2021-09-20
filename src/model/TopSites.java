@@ -3,15 +3,33 @@ package model;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Purpose:
+ * Assumptions:
+ * Dependencies:
+ * Example:
+ * Other details:
+ *
+ * @Author Evan Kenyon
+ */
 public class TopSites {
     private Map<URL, Integer> siteFreq;
     private List<URL> urlsFreqOrdered;
 
+    /**
+     * Purpose:
+     * Assumptions:
+     */
     public TopSites() {
         siteFreq = new HashMap<>();
         urlsFreqOrdered = new ArrayList<>();
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param url
+     */
     public void incrementURLFrequency(URL url) {
         if(!siteFreq.containsKey(url)) {
             siteFreq.put(url, 0);
@@ -19,6 +37,11 @@ public class TopSites {
         siteFreq.put(url, siteFreq.get(url) + 1);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     */
     public List<URL> getUrlsFreqOrdered() {
         sortTopURLs();
         return urlsFreqOrdered.subList(0, Math.min(urlsFreqOrdered.size(), 10));

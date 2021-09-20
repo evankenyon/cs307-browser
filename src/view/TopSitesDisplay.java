@@ -12,11 +12,25 @@ import util.ButtonMaker;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Purpose:
+ * Assumptions:
+ * Dependencies:
+ * Example:
+ * Other details:
+ *
+ * @Author Evan Kenyon
+ */
 public class TopSitesDisplay {
     private Text description;
     private ListView<URL> topSitesList;
     private Button goToTopSiteButton;
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param onPressButton
+     */
     public TopSitesDisplay(EventHandler<ActionEvent> onPressButton) {
         description = new Text("Most viewed webpages:");
         topSitesList = new ListView<>();
@@ -25,14 +39,29 @@ public class TopSitesDisplay {
         goToTopSiteButton.setDisable(true);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     */
     public Node getTopSitesDisplay() {
         return new VBox(description, topSitesList, goToTopSiteButton);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     */
     public URL getSelectedSite() {
         return topSitesList.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param topSitesList
+     */
     public void updateTopSites(List<URL> topSitesList) {
         this.topSitesList.getItems().clear();
         this.topSitesList.getItems().addAll(topSitesList);

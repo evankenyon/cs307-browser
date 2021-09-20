@@ -2,17 +2,24 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import model.AddFavorite;
-import model.NanoBrowser;
 import util.ButtonMaker;
 
 import java.net.MalformedURLException;
 
+/**
+ * Purpose:
+ * Assumptions:
+ * Dependencies:
+ * Example:
+ * Other details:
+ *
+ * @Author Evan Kenyon
+ */
 public class FavoritesDisplay {
     private TextInputDialog setNameInput;
     private ChoiceBox<String> chooseFavoriteSite;
@@ -22,6 +29,12 @@ public class FavoritesDisplay {
     private boolean wasCancelPressed;
 
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param selectFavoriteEvent
+     * @param onCloseEvent
+     */
     // Set up code was borrowed from
     // https://www.geeksforgeeks.org/javafx-textinputdialog/
     public FavoritesDisplay(EventHandler<ActionEvent> selectFavoriteEvent, EventHandler<DialogEvent> onCloseEvent) {
@@ -35,11 +48,21 @@ public class FavoritesDisplay {
         setNameInput.getDialogPane().lookupButton(ButtonType.CANCEL).addEventFilter(ActionEvent.ACTION, event -> wasCancelPressed = true);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     */
     public Node getDisplayComponentsLeftPanel() {
         return new VBox(addFavoriteButton, description, chooseFavoriteSite, selectFavoriteButton);
     }
 
-
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     * @throws IllegalAccessException
+     */
     public String getSiteToVisit() throws IllegalAccessException{
         if(chooseFavoriteSite.getValue().equals("")) {
             throw new IllegalAccessException();
@@ -47,6 +70,14 @@ public class FavoritesDisplay {
         return chooseFavoriteSite.getValue();
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param addFavorite
+     * @param myURLDisplay
+     * @throws IllegalAccessException
+     * @throws MalformedURLException
+     */
     public void addFavoriteRefToBrowser(AddFavorite addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
         if(!wasCancelPressed) {
             updateFavoriteChoices();

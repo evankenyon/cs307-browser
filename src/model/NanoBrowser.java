@@ -6,12 +6,25 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Purpose:
+ * Assumptions:
+ * Dependencies:
+ * Example:
+ * Other details:
+ *
+ * @Author Evan Kenyon
+ */
 public class NanoBrowser {
     private URL myCurrentURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
     private Home home;
 
+    /**
+     * Purpose:
+     * Assumptions:
+     */
     public NanoBrowser() {
         myCurrentURL = null;
         myCurrentIndex = -1;
@@ -19,6 +32,12 @@ public class NanoBrowser {
         home = new Home();
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     * @throws IndexOutOfBoundsException
+     */
     // Move to next URL in the history
     public URL next() throws IndexOutOfBoundsException{
         myCurrentIndex += 1;
@@ -28,6 +47,12 @@ public class NanoBrowser {
         return myHistory.get(myCurrentIndex);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     * @throws IndexOutOfBoundsException
+     */
     // Move to previous URL in the history
     public URL back () throws IndexOutOfBoundsException{
         myCurrentIndex -= 1;
@@ -37,10 +62,21 @@ public class NanoBrowser {
         return myHistory.get(myCurrentIndex);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @throws MalformedURLException
+     */
     public void setHome() throws MalformedURLException {
         home.setHome(myCurrentURL);
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @return
+     * @throws NullPointerException
+     */
     // TODO: Change exception type?
     public URL getHome() throws NullPointerException{
         URL homeURL = home.getHome();
@@ -48,6 +84,13 @@ public class NanoBrowser {
         return homeURL;
     }
 
+    /**
+     * Purpose:
+     * Assumptions:
+     * @param url
+     * @return
+     * @throws IOException
+     */
     public URL handleNewURL(String url) throws IOException {
         URL tmp = completeURL(url);
         if (tmp != null) {

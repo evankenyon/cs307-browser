@@ -2,7 +2,6 @@ package view;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import model.AddFavorite;
-import model.Home;
 import model.NanoBrowser;
 import model.TopSites;
 import org.w3c.dom.Document;
@@ -42,6 +40,7 @@ import util.ButtonMaker;
  * @author Yuzhang Han
  * @author Edwin Ward
  * @author Robert C. Duvall
+ * @author Evan Kenyon
  */
 public class NanoBrowserDisplay {
     // constants
@@ -62,7 +61,8 @@ public class NanoBrowserDisplay {
 
 
     /**
-     * Create a web browser with prompts in the given language with initially empty state.
+     * Purpose (comment borrowed from Prof. Duvall): Create a web browser with prompts in the given language with initially empty state.
+     * Assumptions:
      */
     public NanoBrowserDisplay() {
         nanoBrowser = new NanoBrowser();
@@ -73,7 +73,8 @@ public class NanoBrowserDisplay {
     }
 
     /**
-     * Returns scene for the browser, so it can be added to stage.
+     * Purpose (comment borrowed from Prof. Duvall):  Returns scene for the browser, so it can be added to stage.
+     * Assumptions:
      */
     public Scene makeScene (int width, int height) {
         BorderPane root = new BorderPane();
@@ -86,7 +87,8 @@ public class NanoBrowserDisplay {
     }
 
     /**
-     * Display given URL.
+     * Purpose (comment borrowed from Prof. Duvall): Display given URL.
+     * Assumptions:
      */
     public void showPage (String url) {
         try {
