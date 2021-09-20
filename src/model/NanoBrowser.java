@@ -8,15 +8,15 @@ import java.util.List;
 
 public class NanoBrowser {
     private URL myCurrentURL;
-    private URL homeURL;
     private int myCurrentIndex;
     private List<URL> myHistory;
+    private Home home;
 
     public NanoBrowser() {
         myCurrentURL = null;
-        homeURL = null;
         myCurrentIndex = -1;
         myHistory = new ArrayList<>();
+        home = new Home();
     }
 
     // Move to next URL in the history
@@ -37,16 +37,14 @@ public class NanoBrowser {
         return myHistory.get(myCurrentIndex);
     }
 
-    public void setHome() {
-        homeURL = myCurrentURL;
+    public void setHome() throws MalformedURLException {
+        home.setHome(myCurrentURL);
     }
 
     // TODO: Change exception type?
-    public URL getHome() throws NullPointerException {
+    public URL getHome() {
+        URL homeURL = home.getHome();
         addURLToHistory(homeURL);
-        if(homeURL == null) {
-            throw new NullPointerException();
-        }
         return homeURL;
     }
 

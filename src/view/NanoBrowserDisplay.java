@@ -2,6 +2,7 @@ package view;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import model.AddFavorite;
+import model.Home;
 import model.NanoBrowser;
 import model.TopSites;
 import org.w3c.dom.Document;
@@ -53,11 +55,10 @@ public class NanoBrowserDisplay {
     private TopSites topSites;
     private FavoritesDisplay favoritesDisplay;
     private TopSitesDisplay topSitesDisplay;
+    private HomeDisplay homeDisplay;
     private Button nextButton;
     private Button backButton;
     private Button goButton;
-    private Button setHomeButton;
-    private Button goHomeButton;
 
 
     /**
@@ -153,9 +154,19 @@ public class NanoBrowserDisplay {
     private Node makeInputPanel () {
         setupHistoryButtons();
         setupShowHandlerDependentNodes();
-        setupSetHomeButton();
-        setupGoHomeButton();
-        return new HBox(backButton, nextButton, goButton, setHomeButton, goHomeButton, favoritesDisplay.getAddFavoriteButton(), myURLDisplay);
+        setupHomeDisplay();
+        return new HBox(backButton, nextButton, goButton, homeDisplay.getHomeDisplay(), favoritesDisplay.getAddFavoriteButton(), myURLDisplay);
+    }
+
+    private void setupHomeDisplay() {
+        homeDisplay = new HomeDisplay(event -> {
+            try {
+                nanoBrowser.setHome();
+                homeDisplay.enableGoHomeButton();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }, event -> update(nanoBrowser.getHome()));
     }
 
     private void setupHistoryButtons() {
@@ -174,24 +185,7 @@ public class NanoBrowserDisplay {
         });
     }
 
-    private void setupSetHomeButton() {
-        setHomeButton = ButtonMaker.makeButton("Set Home", event -> {
-            nanoBrowser.setHome();
-            goHomeButton.setDisable(false);
-        });
-    }
 
-    private void setupGoHomeButton() {
-        goHomeButton = ButtonMaker.makeButton("Go Home", event -> {
-            try {
-                update(nanoBrowser.getHome());
-            } catch (NullPointerException e) {
-                //FIXME: Handle this better
-                e.printStackTrace();
-            }
-        });
-        goHomeButton.setDisable(true);
-    }
 
     // Make panel where "would-be" clicked URL is displayed
     private Node makeInformationPanel () {

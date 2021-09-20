@@ -14,20 +14,18 @@ import java.util.List;
 
 public class TopSitesDisplay {
     private Text description;
-    private Text breakLine;
     private ListView<URL> topSitesList;
     private Button goToTopSiteButton;
 
     public TopSitesDisplay(EventHandler<ActionEvent> onPressButton) {
         description = new Text("Most viewed webpages:");
-        breakLine = new Text();
         topSitesList = new ListView<>();
         goToTopSiteButton = ButtonMaker.makeButton("Go to selected site", onPressButton);
         goToTopSiteButton.getOnAction();
     }
 
     public Node getTopSitesDisplay() {
-        return new VBox(description, breakLine, topSitesList, goToTopSiteButton);
+        return new VBox(description, topSitesList, goToTopSiteButton);
     }
 
     public URL getSelectedSite() {

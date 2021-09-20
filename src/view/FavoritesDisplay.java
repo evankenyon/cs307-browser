@@ -31,7 +31,6 @@ public class FavoritesDisplay {
         setNameInput.setOnCloseRequest(onCloseEvent);
     }
 
-    // Rename
     public Node getDisplayComponentsLeftPanel() {
         return new VBox(description, chooseFavoriteSite, selectFavoriteButton);
     }

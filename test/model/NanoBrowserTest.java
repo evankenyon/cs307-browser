@@ -5,39 +5,44 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NanoBrowserTest {
+public class NanoBrowserTest {
+    private NanoBrowser nanoBrowser;
 
     @BeforeEach
-
-    @Test
-    void testNext() {
+    public void setUp() {
+        nanoBrowser = new NanoBrowser();
     }
 
     @Test
-    void testBack() {
+    public void testNext() {
+
     }
 
     @Test
-    void testSetHome() {
+    public void testBack() {
     }
 
     @Test
-    void testGetHome() {
+    public void testSetHome() {
     }
 
     @Test
-    void testHandleNewURL() {
+    public void testGetHome() {
     }
 
     @Test
-    void testCompleteURL() {
+    public void testHandleNewURL() {
     }
 
     @Test
-    void testHasNext() {
+    public void testCompleteURL() {
     }
 
     @Test
-    void testHasBack() {
+    public void testHasNext() {
+    }
+
+    @Test
+    public void testHasBack() {
     }
 }
