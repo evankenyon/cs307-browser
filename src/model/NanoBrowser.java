@@ -42,7 +42,7 @@ public class NanoBrowser {
     }
 
     // TODO: Change exception type?
-    public URL getHome() {
+    public URL getHome() throws NullPointerException{
         URL homeURL = home.getHome();
         addURLToHistory(homeURL);
         return homeURL;
@@ -69,8 +69,17 @@ public class NanoBrowser {
         myCurrentIndex += 1;
     }
 
+    // Returns true if there is a next URL available
+    public boolean hasNext () {
+        return myCurrentIndex < (myHistory.size() - 1);
+    }
+
+    public boolean hasBack () {
+        return myCurrentIndex > 0;
+    }
+
     // Deal with a potentially incomplete URL
-    public URL completeURL (String possible) {
+    private URL completeURL (String possible) {
         final String PROTOCOL_PREFIX = "http://";
         try {
             // try it as is
@@ -94,14 +103,5 @@ public class NanoBrowser {
                 }
             }
         }
-    }
-
-    // Returns true if there is a next URL available
-    public boolean hasNext () {
-        return myCurrentIndex < (myHistory.size() - 1);
-    }
-
-    public boolean hasBack () {
-        return myCurrentIndex > 0;
     }
 }
