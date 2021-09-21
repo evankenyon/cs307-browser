@@ -130,7 +130,7 @@ public class NanoBrowserModel {
     }
 
     // Deal with a potentially incomplete URL
-    private URL completeURL (String possible) {
+    private URL completeURL (String possible) throws MalformedURLException {
         final String PROTOCOL_PREFIX = "http://";
         try {
             // try it as is
@@ -144,13 +144,11 @@ public class NanoBrowserModel {
             catch (MalformedURLException ee) {
                 try {
                     // try it as a relative link
-                    // FIXME: need to generalize this :(
                     return new URL(myCurrentURL.toString() + "/" + possible);
                 }
                 catch (MalformedURLException eee) {
-                    // FIXME: not a good way to handle an error!
-                    e.printStackTrace();
-                    return null;
+                    // Search google for the input String if all else fails
+                    return new URL(String.format("http://gooogle.com/search?q=%s", possible));
                 }
             }
         }

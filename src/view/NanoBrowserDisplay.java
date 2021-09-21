@@ -130,15 +130,15 @@ public class NanoBrowserDisplay {
             try {
                 update(favoritesModel.getURLFromReference(favoritesDisplay.getSiteToVisit()));
             } catch (IllegalAccessException e) {
-                //TODO: Make this better
-                e.printStackTrace();
+                showError("Cannot go to a favorite site without selecting one");
             }
         }, event -> {
             try {
                 favoritesDisplay.addFavoriteRefToBrowser(favoritesModel, myURLDisplay);
-            } catch (IllegalAccessException | MalformedURLException e) {
-                //TODO: Make this better
-                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                showError("Cannot go to a favorite site without selecting one");
+            } catch (MalformedURLException e) {
+                showError(String.format("%s is not a valid URL", myURLDisplay.getText()));
             }
         });
     }
