@@ -30,8 +30,10 @@ import util.ButtonMaker;
 
 
 /**
- * A class used to display the viewer for a simple HTML browser.
- * 
+ * Purpose (comment borrowed from Prof. Duvall): A class used to display the viewer for a simple HTML browser.
+ * Dependencies: JavaFX, URL, MalformedURLException, model package, Document, Element, NodeList, Event, EventListener,
+ * EventTarget, ButtonMaker
+ * Example: Instantiate a NanoBrowserDisplay object in a main class in order to have a simple web browser for usage
  * See this tutorial for help on how to use all variety of components:
  *   http://download.oracle.com/otndocs/products/javafx/2/samples/Ensemble/
  * 
@@ -43,7 +45,6 @@ import util.ButtonMaker;
  * @author Evan Kenyon
  */
 public class NanoBrowserDisplay {
-    // constants
     public static final String BLANK = " ";
 
     private WebView myPage;
@@ -62,7 +63,6 @@ public class NanoBrowserDisplay {
 
     /**
      * Purpose (comment borrowed from Prof. Duvall): Create a web browser with prompts in the given language with initially empty state.
-     * Assumptions:
      */
     public NanoBrowserDisplay() {
         nanoBrowserModel = new NanoBrowserModel();
@@ -74,7 +74,6 @@ public class NanoBrowserDisplay {
 
     /**
      * Purpose (comment borrowed from Prof. Duvall):  Returns scene for the browser, so it can be added to stage.
-     * Assumptions:
      */
     public Scene makeScene (int width, int height) {
         BorderPane root = new BorderPane();
@@ -88,14 +87,12 @@ public class NanoBrowserDisplay {
 
     /**
      * Purpose (comment borrowed from Prof. Duvall): Display given URL.
-     * Assumptions:
      */
     public void showPage (String url) {
         try {
             update(nanoBrowserModel.handleNewURL(url));
         }
         catch (Exception e) {
-            e.printStackTrace();
             showError(String.format("Could not load %s", url));
         }
     }
@@ -148,7 +145,7 @@ public class NanoBrowserDisplay {
 
     private Node makeLeftPanel() {
         VBox leftPanel = new VBox();
-        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), favoritesDisplay.getDisplayComponentsLeftPanel());
+        leftPanel.getChildren().addAll(topSitesDisplay.getTopSitesDisplay(), favoritesDisplay.getDisplayComponents());
         return leftPanel;
     }
 
@@ -162,12 +159,8 @@ public class NanoBrowserDisplay {
 
     private void setupHomeDisplay() {
         homeDisplay = new HomeDisplay(event -> {
-            try {
-                nanoBrowserModel.setHome();
-                homeDisplay.enableGoHomeButton();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            nanoBrowserModel.setHome();
+            homeDisplay.enableGoHomeButton();
         }, event -> update(nanoBrowserModel.getHome()));
     }
 

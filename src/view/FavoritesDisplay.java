@@ -12,11 +12,14 @@ import util.ButtonMaker;
 import java.net.MalformedURLException;
 
 /**
- * Purpose:
- * Assumptions:
- * Dependencies:
- * Example:
- * Other details:
+ * Purpose: Represent a favorite frontend component that allows a user to
+ * click a set favorite button or select a favorite site to visit
+ * Assumptions: Properly used within NanoBrowserDisplay (i.e. addFavoriteRefToBrowser
+ * is only called when the user actually wants to do so)
+ * Dependencies: JavaFX, FavoritesModel, ButtonMaker, MalformedURLException
+ * Example: Construct a FavoritesDisplay object for use in NanoBrowserDisplay to allow
+ * for the user to interact with a frontend display that allows them to set and visit
+ * favorite sites
  *
  * @Author Evan Kenyon
  */
@@ -30,38 +33,44 @@ public class FavoritesDisplay {
 
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @param selectFavoriteEvent
-     * @param onCloseEvent
+     * Purpose: Construct a FavoritesDisplay object with handlers for selecting a favorite site to visit
+     * and for setting a favorite site
+     * @param selectFavoriteHandler the event handler for when the user clicks the selectFavoriteButton button
+     *                              to go to the selected favorite site
+     * @param onCloseHandler the event handler for when the user clicks out of the setNameInput TextInputDialog
+     *                       in order to either create a new favorite site or to cancel creating a new favorite site
+     * @throws NullPointerException thrown if selectFavoriteHandler or onCloseHandler is null
      */
-    // Set up code was borrowed from
-    // https://www.geeksforgeeks.org/javafx-textinputdialog/
-    public FavoritesDisplay(EventHandler<ActionEvent> selectFavoriteEvent, EventHandler<DialogEvent> onCloseEvent) {
+    public FavoritesDisplay(EventHandler<ActionEvent> selectFavoriteHandler, EventHandler<DialogEvent> onCloseHandler) throws NullPointerException{
+        if(selectFavoriteHandler == null || onCloseHandler == null) {
+            throw new NullPointerException();
+        }
         instantiateNonButtons();
         chooseFavoriteSite.setOnAction(event -> setSelectFavoriteButtonDisable());
-        setupButtons(selectFavoriteEvent);
+        setupButtons(selectFavoriteHandler);
+        // Set up code was borrowed from
+        // https://www.geeksforgeeks.org/javafx-textinputdialog/
         setNameInput.setHeaderText("Enter the name that you want to refer to this webpage as:");
-        setNameInput.setOnCloseRequest(onCloseEvent);
+        setNameInput.setOnCloseRequest(onCloseHandler);
         // Borrowed code for line below from
         // https://stackoverflow.com/questions/31673853/javafx-how-to-know-if-cancel-was-pressed
         setNameInput.getDialogPane().lookupButton(ButtonType.CANCEL).addEventFilter(ActionEvent.ACTION, event -> wasCancelPressed = true);
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @return
+     * Purpose: Gets all the Nodes of this class wrapped up into a VBox
+     * @return all the Nodes of this class wrapped up into a VBox
      */
-    public Node getDisplayComponentsLeftPanel() {
+    public Node getDisplayComponents() {
         return new VBox(addFavoriteButton, description, chooseFavoriteSite, selectFavoriteButton);
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @return
-     * @throws IllegalAccessException
+     * Purpose: Gets the site to visit based on which favorite site is selected in the
+     * chooseFavoriteSite ChoiceBox
+     * @return the site to visit based on which favorite site is selected in the chooseFavoriteSite
+     * choiceBox
+     * @throws IllegalAccessException thrown if no site is selected
      */
     public String getSiteToVisit() throws IllegalAccessException{
         if(chooseFavoriteSite.getValue().equals("")) {
@@ -71,17 +80,22 @@ public class FavoritesDisplay {
     }
 
     /**
-     * Purpose:
-     * Assumptions:
-     * @param addFavorite
-     * @param myURLDisplay
-     * @throws IllegalAccessException
-     * @throws MalformedURLException
+     * Purpose: Adds the current URL as a favorite with the reference input by the user (both to
+     * this object and to favoritesModel since it is running things on the backend)
+     * @param favoritesModel FavoritesModel object being used by NanoBrowserDisplay to handle
+     *                       favorite backend functionality, used to update backend side of
+     *                       adding favorite URL reference
+     * @param myURLDisplay NanoBrowserDisplay's URL Display, used for getting URL to map current
+     *                     input to
+     * @throws IllegalAccessException thrown if user has not input anything for favorite URL reference
+     * String
+     * @throws MalformedURLException thrown if myURLDisplay's text results in a MalformedURLException
+     * when constructed
      */
-    public void addFavoriteRefToBrowser(FavoritesModel addFavorite, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
+    public void addFavoriteRefToBrowser(FavoritesModel favoritesModel, TextField myURLDisplay) throws IllegalAccessException, MalformedURLException {
         if(!wasCancelPressed) {
             updateFavoriteChoices();
-            addFavorite.addReferenceToMap(getInput(), myURLDisplay.getText());
+            favoritesModel.addReferenceToMap(getInput(), myURLDisplay.getText());
         }
     }
 
@@ -111,7 +125,6 @@ public class FavoritesDisplay {
         chooseFavoriteSite.getItems().add(getInput());
     }
 
-    // Change exception?
     private String getInput() throws IllegalAccessException {
         if(setNameInput.getResult().equals("")) {
             throw new IllegalAccessException();
